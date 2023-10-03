@@ -14,7 +14,7 @@ def print_to_term_and_write_to_file(text, file):
     print(text)
     file.write(text + '\n')
     
-#define variables for budget calculations 
+#define variables needed for budget calculations 
 total_profit_loss = 0
 number_of_months = 0
 monthly_profit_loss = 0
@@ -43,9 +43,9 @@ with open(csv_path_budget, 'r', encoding='UTF-8') as csv_file:  #open the CSV fi
     
         if previous_month_profit_loss is not None: #check to make sure the previous profits/losses row contains data (the first row of data will have no previous month to compare to since it is the first entry in the CSV file)
             monthly_diff = monthly_profit_loss - previous_month_profit_loss  #subtract previous row profit/loss from current row profit/loss to find the month to month difference
-            monthly_differences_list.append(monthly_diff)  #append the difference to a list that stores all the month to month profit/loss differences for later overall monthly profit/loss mean (average) calculation
+            monthly_differences_list.append(monthly_diff)  #append the current month to month profit/loss difference to a list that stores all the month to month profit/loss differences for later overall monthly profit/loss mean (average) calculation
        
-        #this if/elif section to stores the highest and lowest monthly profit/loss differences and the corresponding date information
+        #this if/elif section stores the highest and lowest monthly profit/loss differences and the corresponding date information
         if  monthly_diff > highest_profit:  
             highest_profit = monthly_diff
             highest_profit_month = str(row['Date'])
@@ -55,7 +55,7 @@ with open(csv_path_budget, 'r', encoding='UTF-8') as csv_file:  #open the CSV fi
             
         previous_month_profit_loss = monthly_profit_loss #before moving to the next row, set the previous month profit/loss variable to the current row profit/loss value
 
-    mean_monthly_diff = float(sum(monthly_differences_list)) / (number_of_months - 1) # calculate the mean month to month profit/loss from the list of monthly differences we stored as we iterated through the rows
+    mean_monthly_diff = float(sum(monthly_differences_list)) / (number_of_months - 1) #calculate the mean month to month profit/loss from the list of monthly differences we stored as we iterated through the rows
 
 #round all of the output variables to desired number of decimal places
 rounded_mean_monthly_diff = round(mean_monthly_diff, 2)
@@ -70,11 +70,11 @@ with open(output_file_path_budget, "w") as file:
     print_to_term_and_write_to_file("-------------------------", file)
     print_to_term_and_write_to_file(f"Total Months: {number_of_months}", file)
     print_to_term_and_write_to_file(f"Total: ${rounded_total_profit_loss:.0f}", file)
-    print_to_term_and_write_to_file(f"Average Change: ${rounded_mean_monthly_diff:.2f}", file)
+    print_to_term_and_write_to_file(f"Average Change: ${rounded_mean_monthly_diff}", file)
     print_to_term_and_write_to_file(f"Greatest Increase in Profits: {highest_profit_month} (${rounded_highest_profit:.0f})", file)
     print_to_term_and_write_to_file(f"Greatest Decrease in Profits: {highest_loss_month} (${rounded_highest_loss:.0f})", file)
     
-#define variables for ballot tabulations
+#define variables needed for ballot tabulations
 unique_candidates = {} #create a dictionary to store the unique candidate names
 candidate_name = None #variable for use in summing vote totals for each unique candidate
 number_of_ballots = 0  #variabe for storing the number of total ballots
@@ -89,9 +89,9 @@ with open(csv_path_election, 'r', encoding='UTF-8') as csv_file:  #open the CSV 
         
         if 'Ballot ID' in row:  #if statement for counting overall ballot total
             number_of_ballots += 1
-            
-        candidate_name = row['Candidate']   # if statement for counting ballots for each unique candidate
-       
+        
+        # if statement for counting ballot totals for each unique candidate    
+        candidate_name = row['Candidate']   
         if candidate_name in unique_candidates:
             unique_candidates[candidate_name] += 1
         else:
@@ -100,16 +100,14 @@ with open(csv_path_election, 'r', encoding='UTF-8') as csv_file:  #open the CSV 
 #printing all desired outputs to terminal and to file
 with open(output_file_path_election, "w") as file:
     print()
+    print()
     print_to_term_and_write_to_file("Election Results", file)
-    print_to_term_and_write_to_file("", file)
     print_to_term_and_write_to_file("-------------------------", file)
-    print_to_term_and_write_to_file("", file)
     print_to_term_and_write_to_file(f"Total Votes: {number_of_ballots}", file)
-    print_to_term_and_write_to_file("", file)
     print_to_term_and_write_to_file("-------------------------", file)
-    print_to_term_and_write_to_file("", file)
     
-    for candidate_name, unique_candidate_counts in unique_candidates.items():  #loop for printing the name of each individual unique candidate, their % of the total vote, and their total number of votes
+    #loop for printing the name of each individual unique candidate, their % of the total vote, and their total number of votes
+    for candidate_name, unique_candidate_counts in unique_candidates.items():
         unique_candidate_percent_vote = (unique_candidate_counts / number_of_ballots) * 100
         rounded_unique_candidate_percent_vote = round(unique_candidate_percent_vote, 3)   #round the percentage of total votes to 3 decimal places
         
@@ -119,10 +117,6 @@ with open(output_file_path_election, "w") as file:
             top_vote_getter = candidate_name
             
         print_to_term_and_write_to_file(f"{candidate_name}: {rounded_unique_candidate_percent_vote}% ({unique_candidate_counts})", file)
-        print_to_term_and_write_to_file("", file)
-    print_to_term_and_write_to_file("", file)
     print_to_term_and_write_to_file("-------------------------", file)
-    print_to_term_and_write_to_file("", file)
     print_to_term_and_write_to_file(f"Winner: {top_vote_getter}", file)
-    print_to_term_and_write_to_file("", file)
     print_to_term_and_write_to_file("-------------------------", file)
